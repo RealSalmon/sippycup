@@ -6,7 +6,7 @@ app = SippyCup()
 
 
 @app.route('/test/hello/<string:name>')
-@app.returns('text/plain')
+@app.mimetype('text/plain')
 def hello_world(name):
     return 'Hello, {0}!'.format(name)
 

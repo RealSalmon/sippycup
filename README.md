@@ -13,7 +13,7 @@ app = SippyCup()
 
 
 @app.route('/hello/<string:name>', methods=['GET', 'POST'])
-@app.returns('text/plain')
+@app.mimetime('text/plain')
 def hello_world(name):
     return 'Hello, {0}!'.format(name)
 

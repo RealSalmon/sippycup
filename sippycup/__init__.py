@@ -40,7 +40,7 @@ class SippyCup(object):
 
         return wrapper
 
-    def returns(self, mimetype):
+    def mimetype(self, mimetype):
 
         # Initial level is required to accept argument
 
