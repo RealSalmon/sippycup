@@ -11,7 +11,7 @@ def hello_world(name):
     return 'Hello, {0}!'.format(name)
 
 
-@app.route('/test/json', methods=['POST'])
+@app.route('/test/json/', methods=['POST'])
 def hello_json():
     return app.request
 
@@ -27,20 +27,20 @@ def test_not_found():
     e = NotFound()
     assert response['headers']['Content-Type'] == 'application/json'
     assert response['statusCode'] == e.code
-    assert response['body'] == json.dumps(e.message)
+    assert response['body'] == json.dumps(str(e))
 
 
 def test_method_not_allowed():
-    request = {'path': '/test/json', 'httpMethod': 'GET'}
+    request = {'path': '/test/json/', 'httpMethod': 'GET'}
     response = app.run(request, None)
     e = MethodNotAllowed()
     assert response['headers']['Content-Type'] == 'application/json'
     assert response['statusCode'] == e.code
-    assert response['body'] == json.dumps(e.message)
+    assert response['body'] == json.dumps(str(e))
 
 
 def test_hello_json():
-    request = {'path': '/test/json', 'httpMethod': 'POST'}
+    request = {'path': '/test/json/', 'httpMethod': 'POST'}
     response = app.run(request, None)
     assert response['headers']['Content-Type'] == 'application/json'
     assert response['statusCode'] == 200
