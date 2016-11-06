@@ -1,0 +1,8 @@
+image:
+  name: python:2.7
+pipelines:
+  default:
+    - step:
+        script:
+          - pip install tox
+          - tox

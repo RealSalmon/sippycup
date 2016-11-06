@@ -1,0 +1,7 @@
+venv
+.idea
+.cache
+.tox
+MANIFEST
+*.pyc
+tests/__pycache__
