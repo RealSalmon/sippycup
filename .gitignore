@@ -5,3 +5,4 @@ venv
 MANIFEST
 *.pyc
 tests/__pycache__
+lambda_function.zip
