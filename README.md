@@ -13,16 +13,16 @@ app = SippyCup()
 
 
 @app.route('/hello/<string:name>', methods=['GET', 'POST'])
-@app.mimetime('text/plain')
-def hello_world(name):
+@app.mimetype('text/plain')
+def hello_world(name='World'):
     return 'Hello, {0}!'.format(name)
 
 
 @app.route('/')
-def hello_json():
+def index():
     return app.request
 
 
-def lambda_handler(event, context):
-    return app.run(event, context)
+lambda_handler = app.run
+
 ```
