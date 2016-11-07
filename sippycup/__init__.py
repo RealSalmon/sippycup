@@ -1,62 +1,66 @@
-from werkzeug.routing import Map, Rule, RequestRedirect
-from sippycup.response import Response
+import json
+from werkzeug.routing import Map, Rule, RequestRedirect, HTTPException
+from werkzeug.wrappers import Response
+from sippycup.requests import SippyCupRequest, SippyCupApiGatewayRequest
 
 
 class SippyCup(object):
-
-    @property
-    def _script_name(self):
-        try:
-            return '/{0}/'.format(self.request['requestContext']['stage'])
-        except KeyError:
-            return None
-
-    @property
-    def _host(self):
-        try:
-            return self.request['headers']['Host']
-        except KeyError:
-            return 'localhost'
 
     def __init__(self):
         self.route_map = Map()
         self.request = None
         self.response = None
 
-    def run(self, request, context):
-        self.response = Response()
+    def dispatch_request(self, request):
+
         self.request = request
+        self.response = Response()
+        self.response.headers['Content-Type'] = 'application/json'
+
+        adapter = self.route_map.bind_to_environ(request.environ)
+        result = None
         try:
-
-            adapter = self.route_map.bind(
-                self._host,
-                script_name=self._script_name,
-                url_scheme='https'
-            )
-
-            endpoint, values = adapter.match(
-                path_info=self.request['path'],
-                method=self.request['httpMethod']
-            )
-
-            self.response.body = endpoint(**values)
+            endpoint, values = adapter.match()
+            result = endpoint(**values)
         except RequestRedirect as E:
-            self.response.statusCode = 302
             self.response.headers['Location'] = E.message
+            self.response.status_code = 302
+        except HTTPException as E:
+            self.response.status_code = E.code
+            result = E.description
         except Exception as E:
+            import traceback
+            self.response.status_code = 500
+            result = E.message
 
-            if hasattr(E, 'code'):
-                self.response.statusCode = E.code
-            else:
-                self.response.statusCode = 500
+        if self.response.headers['Content-Type'] == 'application/json':
+            self.response.set_data(json.dumps(result))
+        else:
+            self.response.set_data(result)
 
-            self.response.body = str(E)
-
-        return self.response.send()
+    def run(self, environ, start_response):
+        if 'wsgi.version' in environ:
+            # WSGi
+            self.dispatch_request(SippyCupRequest(environ))
+            return self.response(environ, start_response)
+        else:
+            # API Gateway
+            self.dispatch_request(SippyCupApiGatewayRequest(environ))
+            return {
+                'statusCode': self.response.status_code,
+                'body': self.response.get_data(True),
+                'headers': {key: value
+                            for key, value in self.response.headers.iteritems()}
+            }
 
     def route(self, route, defaults=None, methods=None):
         def wrapper(func):
-            self.route_map.add(Rule(route, endpoint=func, defaults=defaults, methods=methods))
+            self.route_map.add(Rule(
+                route,
+                endpoint=func,
+                defaults=defaults,
+                methods=methods
+            ))
             return func
 
         return wrapper
