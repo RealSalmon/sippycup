@@ -1,6 +1,9 @@
 from StringIO import StringIO
 from urllib import urlencode
 
+# https://www.python.org/dev/peps/pep-0333/
+
+
 class WsgiEnviron(object):
 
     @property
@@ -45,7 +48,6 @@ class WsgiEnviron(object):
         else:
             return urlencode(self.request['queryStringParameters'])
 
-
     def __init__(self, request):
         self.request = request
 
@@ -62,7 +64,7 @@ class WsgiEnviron(object):
             'wsgi.version': (1, 0),
             'wsgi.url_scheme': self.url_scheme,
             'wsgi.input': self.body,
-            'wsgi.errors': '', # what should this be?
+            'wsgi.errors': '',  # what should this be?
             'wsgi.multiprocess': False,
             'wsgi.multithread': False,
             'wsgi.run_once': False
