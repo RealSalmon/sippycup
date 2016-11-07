@@ -27,6 +27,7 @@ class SippyCup(object):
             self.response.status_code = 302
         except HTTPException as E:
             self.response.status_code = E.code
+            self.response.headers['Content-Type'] = 'text/plain'
             result = E.description
         except Exception as E:
             import traceback
@@ -48,15 +49,6 @@ class SippyCup(object):
             from responses import SippyCupApiGatewayResponse
             self.dispatch_request(SippyCupApiGatewayRequest(environ))
             return dict(SippyCupApiGatewayResponse(self.response))
-
-            """
-            return {
-                'statusCode': self.response.status_code,
-                'body': self.response.get_data(True),
-                'headers': {key: value
-                            for key, value in self.response.headers.iteritems()}
-            }
-            """
 
     def route(self, route, defaults=None, methods=None):
         def wrapper(func):
