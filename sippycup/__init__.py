@@ -40,18 +40,23 @@ class SippyCup(object):
 
     def run(self, environ, start_response):
         if 'wsgi.version' in environ:
-            # WSGi
+            # WSGI
             self.dispatch_request(SippyCupRequest(environ))
             return self.response(environ, start_response)
         else:
             # API Gateway
+            from responses import SippyCupApiGatewayResponse
             self.dispatch_request(SippyCupApiGatewayRequest(environ))
+            return dict(SippyCupApiGatewayResponse(self.response))
+
+            """
             return {
                 'statusCode': self.response.status_code,
                 'body': self.response.get_data(True),
                 'headers': {key: value
                             for key, value in self.response.headers.iteritems()}
             }
+            """
 
     def route(self, route, defaults=None, methods=None):
         def wrapper(func):
