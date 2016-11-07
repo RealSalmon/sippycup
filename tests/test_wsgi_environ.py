@@ -1,6 +1,3 @@
-import json
-from werkzeug.exceptions import MethodNotAllowed, NotFound
-from sippycup import SippyCup
 import urlparse
 from StringIO import StringIO
 from sippycup.wsgienviron import WsgiEnviron
