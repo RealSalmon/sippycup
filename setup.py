@@ -1,6 +1,6 @@
 from setuptools import setup
 
-with open('README.md') as readme_file:
+with open('README.rst') as readme_file:
     README = readme_file.read()
 
 config = {
@@ -18,7 +18,7 @@ config = {
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7'
+        'Programming Language :: Python :: 2.7',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development'
