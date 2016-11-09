@@ -6,6 +6,7 @@ with open('README.rst') as readme_file:
 config = {
     'description': 'Serverless nanoframework for AWS API Gateway and AWS Lambda',
     'long_description': README,
+    'url': 'https://bitbucket.org/realsalmon/sippycup',
     'author': 'Ben Jones',
     'author_email': 'ben@fogbutter.com',
     'version': '0.1.0',
