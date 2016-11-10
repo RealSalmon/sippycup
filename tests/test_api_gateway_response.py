@@ -7,7 +7,6 @@ r.set_data('I am here')
 r.set_cookie('ohai', 'there')
 
 
-
 def test_response_body():
     assert r.apigr['body'] == 'I am here'
 

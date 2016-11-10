@@ -41,7 +41,7 @@ SHELL := /bin/bash
 
 PACKAGE_NAME=$$(basename $(FUNCTION_FILE) .py).zip
 
-package:
+lambda-package:
 	rm -f $(PACKAGE_NAME)
 	zip $(PACKAGE_NAME) -r $(FUNCTION_FILE) $(INCLUDES)
 ifeq ($(PACKAGES), true)
@@ -49,11 +49,17 @@ ifeq ($(PACKAGES), true)
 		zip $$(dirs -l -0)/$(PACKAGE_NAME) -r ./ -x $(BASE_EXCLUDES) $(EXCLUDES)
 endif
 
-list-package: package
+list-lambda-package: lambda-package
 	unzip -l $(PACKAGE_NAME)
 
-deploy: package
+deploy: lambda-package
 	aws lambda update-function-code \
 		--profile $(DEPLOY_PROFILE) \
 		--zip-file fileb://$(PACKAGE_NAME) \
 		--function-name $(DEPLOY_NAME)
+
+clean:
+	rm -rf *.egg-info dist MANIFEST
+
+pip-package:
+	python setup.py sdist
