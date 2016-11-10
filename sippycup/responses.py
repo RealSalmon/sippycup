@@ -4,6 +4,14 @@ from werkzeug.wrappers import Response
 
 class SippyCupResponse(Response):
 
+    @property
+    def apigr(self):
+        return {
+            'statusCode': self.status_code,
+            'body': self.get_data(True),
+            'headers': {key: value for key, value in self.headers.iteritems()}
+        }
+
     def __init__(self, response=None, status=None, headers=None,
                  mimetype=None, content_type=None, direct_passthrough=False):
         super(SippyCupResponse, self).__init__(
@@ -20,27 +28,5 @@ class SippyCupResponse(Response):
     def set_data(self, value):
         if self.headers['Content-Type'] == 'application/json':
             value = json.dumps(value)
-        
+
         return super(SippyCupResponse, self).set_data(value)
-
-class SippyCupApiGatewayResponse(object):
-
-    @property
-    def statusCode(self):
-        return self._response.status_code
-
-    @property
-    def body(self):
-        return self._response.get_data(True)
-
-    @property
-    def headers(self):
-        return {key: value
-                for key, value in self._response.headers.iteritems()}
-
-    def __init__(self, response):
-        self._response = response
-
-    def __iter__(self):
-        for key in ['statusCode', 'body', 'headers']:
-            yield (key, getattr(self, key))

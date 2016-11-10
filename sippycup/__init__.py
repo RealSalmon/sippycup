@@ -41,9 +41,8 @@ class SippyCup(object):
             return self.response(environ, start_response)
         else:
             # API Gateway
-            from responses import SippyCupApiGatewayResponse
             self.dispatch_request(SippyCupApiGatewayRequest(environ))
-            return dict(SippyCupApiGatewayResponse(self.response))
+            return self.response.apigr
 
     def route(self, route, defaults=None, methods=None):
         def wrapper(func):
