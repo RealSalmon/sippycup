@@ -1,8 +1,6 @@
-import json
 from werkzeug.routing import Map, Rule, RequestRedirect, HTTPException
-from werkzeug.wrappers import Response
 from sippycup.requests import SippyCupRequest, SippyCupApiGatewayRequest
-
+from sippycup.responses import SippyCupResponse
 
 class SippyCup(object):
 
@@ -14,8 +12,7 @@ class SippyCup(object):
     def dispatch_request(self, request):
 
         self.request = request
-        self.response = Response()
-        self.response.headers['Content-Type'] = 'application/json'
+        self.response = SippyCupResponse()
 
         adapter = self.route_map.bind_to_environ(request.environ)
         result = None
@@ -30,14 +27,12 @@ class SippyCup(object):
             self.response.headers['Content-Type'] = 'text/plain'
             result = E.description
         except Exception as E:
-            import traceback
+            # TODO: something useful...
             self.response.status_code = 500
+            self.response.headers['Content-Type'] = 'text/plain'
             result = E.message
 
-        if self.response.headers['Content-Type'] == 'application/json':
-            self.response.set_data(json.dumps(result))
-        else:
-            self.response.set_data(result)
+        self.response.set_data(result)
 
     def run(self, environ, start_response):
         if 'wsgi.version' in environ:

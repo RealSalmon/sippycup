@@ -18,6 +18,19 @@ def json_data():
     return {'ohai': 'there'}
 
 
+@app.route('/redirect/')
+def redirect():
+    app.response.redirect('/going/places', 301)
+
+
+def test_redirect():
+    r = get_apigr()
+    r['path'] = '/redirect/'
+    response = app.run(r, None)
+    print(response)
+    assert response['statusCode'] == 301
+    assert response['headers']['Location'] == '/going/places'
+
 def test_return_string_default():
     r = get_apigr()
     r['path'] = '/hello/'
