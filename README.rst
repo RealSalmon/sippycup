@@ -4,18 +4,16 @@ Sippy Cup
 Python Serverless Nanoframework for AWS API Gateway and AWS Lambda
 ------------------------------------------------------------------
 
-Sippy Cup is an *extremely* minimalistic `Python`_ framework to quickly
-create serverless applications using `AWS API Gateway`_ and `AWS
-Lambda`_.
+Sippy Cup is an *extremely* minimalistic `Python`_ framework to quickly create
+serverless applications using `AWS API Gateway`_ and `AWS Lambda`_.
 
-Sippy Cup converts the input format sent to an AWS Lambda function by
-API Gateway into a `WSGI`_ environment to provide a set of
-`Werkzeug`_-based requestand response objects, converting the latter to
-the return format expected by API Gateway.
+Sippy Cup converts the input format sent to an AWS Lambda function by API
+Gateway into a `WSGI`_ environment to provide a set of `Werkzeug`_-based
+request and response objects, converting the latter to the return format
+expected by API Gateway.
 
-It is intended to be similar in use to Python frameworks such as
-`Flask`_ and `Chalice`_, although by design it has a significantly
-smaller feature set.
+It is intended to be similar in use to Python frameworks such as `Flask`_ and
+`Chalice`_, although it has a significantly smaller feature set by design.
 
 Getting started
 ~~~~~~~~~~~~~~~
@@ -52,13 +50,14 @@ lambda\_function.py provides a demo application
 
     @app.route('/')
     def index():
-        return app.request
+        # return the original event sent to Lambda from API Gateway
+        return app.request.apigr
 
 
     lambda_handler = app.run
 
-You will the need to `create a deployment package`_ and use that to
-create a new AWS Lambda function.
+You will need to `create a deployment package`_ and use that to create a new
+AWS Lambda function.
 
 Finally, `set up an API Gateway proxy resource with the lambda proxy
 integration`_. It is recommended to create resources on both ‘/’ and
