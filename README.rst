@@ -15,6 +15,10 @@ expected by API Gateway.
 It is intended to be similar in use to Python frameworks such as `Flask`_ and
 `Chalice`_, although it has a significantly smaller feature set by design.
 
+Background
+~~~~~~~~~~
+`<https://ben.fogbutter.com/2016/11/09/introducing-sippy-cup.html>`_
+
 Getting started
 ~~~~~~~~~~~~~~~
 
