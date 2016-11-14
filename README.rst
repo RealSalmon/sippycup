@@ -60,6 +60,13 @@ lambda\_function.py provides a demo application
 
     lambda_handler = app.run
 
+    if __name__ == '__main__':
+        from werkzeug.serving import run_simple
+        run_simple(
+            '127.0.0.1', 5000, lambda_handler, use_debugger=True, use_reloader=True
+        )
+
+
 You will need to `create a deployment package`_ and use that to create a new
 AWS Lambda function.
 
