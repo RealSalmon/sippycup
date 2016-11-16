@@ -63,3 +63,6 @@ clean:
 
 pip-package:
 	python setup.py sdist
+
+pip-release: pip-package
+	twine upload dist/*

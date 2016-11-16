@@ -9,7 +9,7 @@ config = {
     'url': 'https://bitbucket.org/realsalmon/sippycup',
     'author': 'Ben Jones',
     'author_email': 'ben@fogbutter.com',
-    'version': '0.2.0',
+    'version': '0.3.0',
     'packages': ['sippycup'],
     'name': 'sippycup',
     'install_requires': ['Werkzeug'],
