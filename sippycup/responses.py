@@ -1,4 +1,5 @@
 import json
+from datetime import date, datetime
 from werkzeug.wrappers import Response
 
 
@@ -27,6 +28,15 @@ class SippyCupResponse(Response):
 
     def set_data(self, value):
         if self.headers['Content-Type'] == 'application/json':
-            value = json.dumps(value)
+            value = json.dumps(value, default=self.json_serializer)
 
         return super(SippyCupResponse, self).set_data(value)
+
+    @staticmethod
+    def json_serializer(obj):
+        if type(obj) in [datetime, date]:
+            return obj.isoformat()
+        else:
+            raise TypeError('{0}.{1} is not JSON serializable'.format(
+                type(obj).__module__, type(obj).__name__
+            ))

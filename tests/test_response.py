@@ -1,4 +1,5 @@
 import json
+from datetime import date, datetime
 from werkzeug.routing import NotFound, MethodNotAllowed
 from sippycup import SippyCup
 from utils import get_apigr
@@ -15,7 +16,11 @@ def hello_world(name='World'):
 
 @app.route('/json/')
 def json_data():
-    return {'ohai': 'there'}
+    return {
+        'ohai': 'there',
+        'date': date(2016, 1, 1),
+        'datetime': datetime(2016, 1, 1, 0, 0, 0, 0)
+    }
 
 
 @app.route('/redirect/')
@@ -30,6 +35,7 @@ def test_redirect():
     print(response)
     assert response['statusCode'] == 301
     assert response['headers']['Location'] == '/going/places'
+
 
 def test_return_string_default():
     r = get_apigr()
@@ -72,7 +78,11 @@ def test_json():
     r['path'] = '/json/'
     response = app.run(r, None)
     assert response['headers']['Content-Type'] == 'application/json'
-    assert json.loads(response['body']) == {'ohai': 'there'}
+    assert json.loads(response['body']) == {
+        'ohai': 'there',
+        'date': '2016-01-01',
+        'datetime': '2016-01-01T00:00:00'
+    }
 
 
 def test_404():
