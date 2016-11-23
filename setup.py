@@ -4,7 +4,7 @@ with open('README.rst') as readme_file:
     README = readme_file.read()
 
 config = {
-    'description': 'An adaptor for serving WSGI applications using AWS Lamba and API Gateway',
+    'description': 'An adaptor for serving WSGI applications using AWS Lambda and API Gateway',
     'long_description': README,
     'url': 'https://bitbucket.org/realsalmon/sippycup',
     'author': 'Ben Jones',

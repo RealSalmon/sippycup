@@ -14,7 +14,7 @@ def hello_world(name='World'):
 @app.route('/')
 def index():
     # return the additional WSGI environment variables that SippyCup
-    # provided
+    # provides
     return jsonify({
         'requestContext': request.environ['apigateway.requestContext'],
         'stageVariables': request.environ['apigateway.stageVariables']

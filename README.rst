@@ -61,7 +61,7 @@ lambda\_function.py provides a demo application
     @app.route('/')
     def index():
         # return the additional WSGI environment variables that SippyCup
-        # provided
+        # provides
         return jsonify({
             'requestContext': request.environ['apigateway.requestContext'],
             'stageVariables': request.environ['apigateway.stageVariables']
