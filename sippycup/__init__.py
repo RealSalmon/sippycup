@@ -1,76 +1,91 @@
-from werkzeug.routing import Map, Rule, RequestRedirect, HTTPException
-from sippycup.requests import SippyCupRequest, SippyCupApiGatewayRequest
-from sippycup.responses import SippyCupResponse
+from urllib import urlencode
+from StringIO import StringIO
 
-class SippyCup(object):
+
+def sippycup(app, event, context=None):
+    response = SippyCupResponse()
+    result = app(WsgiEnviron(event).environ, response)
+    return response.apigr(result)
+
+
+class SippyCupResponse:
+
+    def apigr(self, body=''):
+        return {
+            'statusCode': int(self.status.split()[0]),
+            'body': ''.join([self.body.getvalue()]+list(body)),
+            'headers': dict(self.headers)
+        }
 
     def __init__(self):
-        self.route_map = Map()
-        self.request = None
-        self.response = None
+        self.status = '200 OK'
+        self.headers = []
+        self.body = StringIO()
 
-    def dispatch_request(self, request):
+    def __call__(self, status, headers, exc_info=None):
+        self.status = str(status)
+        self.headers = list(headers)
+        return self.body.write
 
-        self.request = request
-        self.response = SippyCupResponse()
 
-        adapter = self.route_map.bind_to_environ(request.environ)
-        result = None
-        try:
-            endpoint, values = adapter.match()
-            result = endpoint(**values)
-        except RequestRedirect as E:
-            self.response.headers['Location'] = E.message
-            self.response.status_code = 302
-        except HTTPException as E:
-            self.response.status_code = E.code
-            self.response.headers['Content-Type'] = 'text/plain'
-            result = E.description
-        except Exception as E:
-            # TODO: something useful...
-            self.response.status_code = 500
-            self.response.headers['Content-Type'] = 'text/plain'
-            result = E.message
+class WsgiEnviron(object):
 
-        self.response.set_data(result)
+    # https://www.python.org/dev/peps/pep-0333/
 
-    def run(self, environ, start_response):
-        if 'wsgi.version' in environ:
-            # WSGI
-            self.dispatch_request(SippyCupRequest(environ))
-            return self.response(environ, start_response)
+    @property
+    def body(self):
+        if self.request['body'] is not None:
+            return StringIO(self.request['body'])
         else:
-            # API Gateway
-            self.dispatch_request(SippyCupApiGatewayRequest(environ))
-            return self.response.apigr
+            return None
 
-    def route(self, route, defaults=None, methods=None):
-        def wrapper(func):
-            self.route_map.add(Rule(
-                route,
-                endpoint=func,
-                defaults=defaults,
-                methods=methods
-            ))
-            return func
+    @property
+    def content_length(self):
+        if self.request['body'] is not None:
+            return str(len(self.request['body']))
+        else:
+            return str(0)
 
-        return wrapper
+    @property
+    def content_type(self):
+        try:
+            return self.request['headers']['Content-Type']
+        except KeyError:
+            return None
 
-    def mimetype(self, mimetype):
+    @property
+    def query_string(self):
+        if self.request['queryStringParameters'] is None:
+            return None
+        else:
+            return urlencode(self.request['queryStringParameters'])
 
-        # Initial level is required to accept argument
+    def __init__(self, request):
+        self.request = request
 
-        def wrapper(func):
-            # Now we are in the real decorator, which is called at the time
-            # of decoration
+        self.environ = {
+            'REQUEST_METHOD': request['httpMethod'],
+            'SCRIPT_NAME': '/{0}'.format(request['requestContext']['stage']),
+            'PATH_INFO': request['path'],
+            'QUERY_STRING':  self.query_string,
+            'CONTENT_TYPE': self.content_type,
+            'CONTENT_LENGTH': self.content_length,
+            'SERVER_NAME':  request['headers']['Host'],
+            'SERVER_PORT': '443',
+            'SERVER_PROTOCOL': 'HTTP/1.1',
+            'wsgi.version': (1, 0),
+            'wsgi.url_scheme': 'https',
+            'wsgi.input': self.body,
+            'wsgi.errors': '',  # what should this be?
+            'wsgi.multiprocess': False,
+            'wsgi.multithread': False,
+            'wsgi.run_once': False,
+            'apigateway.stageVariables': request['stageVariables'],
+            'apigateway.requestContext': request['requestContext'],
+            'apigateway': True
+        }
 
-            def wrapper2(*args, **kwargs):
-                # This is the wrapper, which is used to to replace the original
-                # fx and called at that time
-                x = func(*args, **kwargs)
-                self.response.headers['Content-Type'] = mimetype
-                return x
+        headers = {'HTTP_{0}'.format(key.upper().replace('-', '_')): value
+                   for key, value in request['headers'].iteritems()}
 
-            return wrapper2
-
-        return wrapper
+        self.environ.update(headers)

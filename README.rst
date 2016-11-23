@@ -1,19 +1,25 @@
 Sippy Cup
 =========
 
-Python Serverless Nanoframework for AWS API Gateway and AWS Lambda
-------------------------------------------------------------------
+Python Adaptor for Serving WSGI Applications with AWS Lambda and API Gateway
+----------------------------------------------------------------------------
 
-Sippy Cup is an *extremely* minimalistic `Python`_ framework to quickly create
-serverless applications using `AWS API Gateway`_ and `AWS Lambda`_.
+Sippy Cup is an *extremely* minimalistic `Python`_ adaptor that allows `WSGI`_
+applications to be served using using `AWS API Gateway`_ and `AWS Lambda`_
+proxy integration.
 
 Sippy Cup converts the input format sent to an AWS Lambda function by API
-Gateway into a `WSGI`_ environment to provide a set of `Werkzeug`_-based
-request and response objects, converting the latter to the return format
-expected by API Gateway.
+Gateway into a `WSGI`_ environment that is used to run a the application.
+The application's response is then converted to a format that can be understood
+by API Gateway.
 
-It is intended to be similar in use to Python frameworks such as `Flask`_ and
-`Chalice`_, although it has a significantly smaller feature set by design.
+When the WSGI environment is created, some additional values from the event
+sent to AWS Lambda from API Gateway are also added. See the demo app below
+for how to access these.
+
+- **apigateway:** True
+- **apigateway.stageVariables:** API Gateway stage variables
+- **apigateway.requestContext:** The event request context
 
 Background
 ~~~~~~~~~~
@@ -41,30 +47,34 @@ lambda\_function.py provides a demo application
 
     # lambda_function.py
 
-    from sippycup import SippyCup
+    from flask import Flask, Response, request, jsonify
+    from sippycup import sippycup
 
-    app = SippyCup()
+    app = Flask(__name__)
 
-
+    @app.route('/hello/', methods=['GET', 'POST'])
     @app.route('/hello/<string:name>', methods=['GET', 'POST'])
-    @app.mimetype('text/plain')
     def hello_world(name='World'):
-        return 'Hello, {0}!'.format(name)
+        return Response('Hello, {0}!'.format(name), mimetype='text/plain')
 
 
     @app.route('/')
     def index():
-        # return the original event sent to Lambda from API Gateway
-        return app.request.apigr
+        # return the additional WSGI environment variables that SippyCup
+        # provided
+        return jsonify({
+            'requestContext': request.environ['apigateway.requestContext'],
+            'stageVariables': request.environ['apigateway.stageVariables']
+        })
 
 
-    lambda_handler = app.run
+    def lambda_handler(event, context):
+        return sippycup(app, event, context)
+
 
     if __name__ == '__main__':
-        from werkzeug.serving import run_simple
-        run_simple(
-            '127.0.0.1', 5000, lambda_handler, use_debugger=True, use_reloader=True
-        )
+        app.run()
+
 
 
 You will need to `create a deployment package`_ and use that to create a new
@@ -78,9 +88,6 @@ integration`_. It is recommended to create resources on both ‘/’ and
 .. _AWS API Gateway: https://aws.amazon.com/api-gateway/
 .. _AWS Lambda: https://aws.amazon.com/lambda/
 .. _WSGI: https://wsgi.readthedocs.io/en/latest/
-.. _Werkzeug: http://werkzeug.pocoo.org/
-.. _Flask: http://flask.pocoo.org/
-.. _Chalice: https://github.com/awslabs/chalice
 .. _create a deployment package: https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html
 .. _virtualenv: https://virtualenv.pypa.io/en/stable/
 .. _set up an API Gateway proxy resource with the lambda proxy integration: https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-set-up-simple-proxy.html#api-gateway-set-up-lambda-proxy-integration-on-proxy-resource

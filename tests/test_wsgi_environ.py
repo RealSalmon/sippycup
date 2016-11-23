@@ -1,6 +1,6 @@
 import urlparse
 from StringIO import StringIO
-from sippycup.wsgienviron import WsgiEnviron
+from sippycup import WsgiEnviron
 from utils import get_apigr
 
 
@@ -20,7 +20,8 @@ def test_wsgi_environ_basic():
         'wsgi.errors': '',
         'wsgi.multiprocess': False,
         'wsgi.multithread': False,
-        'wsgi.run_once': False
+        'wsgi.run_once': False,
+        'apigateway': True
     }
 
     request = get_apigr()
@@ -81,3 +82,13 @@ def test_wsgi_environ_headers():
             hkey
         )
         assert environ[hkey] == value
+
+
+def test_wsgi_environ_stage_vars():
+    request = get_apigr()
+    environ = WsgiEnviron(request).environ
+    assert 'apigateway.stageVariables' in environ
+    assert environ['apigateway.stageVariables'] == {
+            "ben": "was-here",
+            "so_was": "red"
+    }

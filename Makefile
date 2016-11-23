@@ -59,7 +59,7 @@ deploy: lambda-package
 		--function-name $(DEPLOY_NAME)
 
 clean:
-	rm -rf lambda_function.zip *.egg-info dist MANIFEST
+	rm -rf lambda_function.zip *.egg-info dist MANIFEST .cache .tox
 
 pip-package:
 	python setup.py sdist

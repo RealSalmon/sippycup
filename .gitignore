@@ -8,3 +8,4 @@ tests/__pycache__
 lambda_function.zip
 dist
 *.egg-info
+.coverage

@@ -48,7 +48,10 @@ def get_apigr(request=None):
             'CloudFront-Forwarded-Proto': 'https',
             'Accept-Encoding': 'gzip, deflate, sdch, br'
         },
-        'stageVariables': 'null',
+        'stageVariables': {
+            "ben": "was-here",
+            "so_was": "red"
+        },
         'path': '/'
     }
 
