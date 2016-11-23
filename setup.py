@@ -4,15 +4,15 @@ with open('README.rst') as readme_file:
     README = readme_file.read()
 
 config = {
-    'description': 'Serverless nanoframework for AWS API Gateway and AWS Lambda',
+    'description': 'An adaptor for serving WSGI applications using AWS Lamba and API Gateway',
     'long_description': README,
     'url': 'https://bitbucket.org/realsalmon/sippycup',
     'author': 'Ben Jones',
     'author_email': 'ben@fogbutter.com',
-    'version': '0.3.0',
+    'version': '0.4.0',
     'packages': ['sippycup'],
     'name': 'sippycup',
-    'install_requires': ['Werkzeug'],
+    'install_requires': [],
     'license': 'MIT',
     'classifiers': [
         'Development Status :: 3 - Alpha',
@@ -24,9 +24,9 @@ config = {
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development'
     ],
-    'keywords': 'aws lambda api serverless',
+    'keywords': 'aws lambda api serverless wsgi',
     'extras_require': {
-        'test': ['tox', 'pytest'],
+        'test': ['tox', 'pytest', 'pytest-cov', 'flask'],
     },
 
 }
