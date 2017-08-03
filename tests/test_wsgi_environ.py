@@ -1,7 +1,11 @@
-import urlparse
-from StringIO import StringIO
 from sippycup import WsgiEnviron
-from utils import get_apigr
+from tests.utils import get_apigr
+try:
+    import urlparse
+    from StringIO import StringIO
+except ImportError:
+    from urllib import parse as urlparse
+    from io import StringIO
 
 
 def test_wsgi_environ_basic():
@@ -27,8 +31,8 @@ def test_wsgi_environ_basic():
     request = get_apigr()
     request['headers']['Content-Type'] = 'text/plain'
     environ = WsgiEnviron(request).environ
-    for key, value in tests.iteritems():
-        print 'testing {0} key in WSGI environment'.format(key)
+    for key, value in tests.items():
+        print('testing {0} key in WSGI environment'.format(key))
         assert environ[key] == value
 
 
@@ -76,11 +80,11 @@ def test_wsgi_environ_headers():
     }
     request = get_apigr()
     environ = WsgiEnviron(request).environ
-    for key, value in tests.iteritems():
+    for key, value in tests.items():
         hkey = 'HTTP_{0}'.format(key.upper().replace('-', '_'))
-        print 'testing for presence of {0} header in WSGI environment'.format(
+        print('testing for presence of {0} header in WSGI environment'.format(
             hkey
-        )
+        ))
         assert environ[hkey] == value
 
 
