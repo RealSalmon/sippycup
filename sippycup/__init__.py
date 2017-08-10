@@ -1,5 +1,10 @@
-from urllib import urlencode
-from StringIO import StringIO
+import sys
+try:
+    from urllib import urlencode
+    from StringIO import StringIO
+except ImportError:
+    from urllib.parse import urlencode
+    from io import StringIO
 
 
 def sippycup(app, event, context=None):
@@ -13,7 +18,10 @@ class SippyCupResponse:
     def apigr(self, body=''):
         return {
             'statusCode': int(self.status.split()[0]),
-            'body': ''.join([self.body.getvalue()]+list(body)),
+            'body': ''.join(
+                [self.body.getvalue()] +
+                [x.decode(sys.stdout.encoding) for x in body]
+            ),
             'headers': dict(self.headers)
         }
 
@@ -86,6 +94,6 @@ class WsgiEnviron(object):
         }
 
         headers = {'HTTP_{0}'.format(key.upper().replace('-', '_')): value
-                   for key, value in request['headers'].iteritems()}
+                   for key, value in request['headers'].items()}
 
         self.environ.update(headers)

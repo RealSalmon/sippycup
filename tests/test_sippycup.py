@@ -1,6 +1,6 @@
 from flask import Flask, Response
 from sippycup import sippycup
-from utils import get_apigr
+from tests.utils import get_apigr
 
 app = Flask(__name__)
 
@@ -34,6 +34,3 @@ def test_response_status():
     result = sippycup(app, event)
     assert 'statusCode' in result
     assert result['statusCode'] == 200
-
-
-
