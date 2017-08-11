@@ -36,6 +36,85 @@ def test_wsgi_environ_basic():
         assert environ[key] == value
 
 
+def test_wsgi_script_name_root():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/'
+    request['path'] = '/'+request['requestContext']['stage'] + request['requestContext']['resourcePath']
+    environ = WsgiEnviron(request).environ
+    assert environ['SCRIPT_NAME'] == '/testing'
+
+
+def test_wsgi_script_name_root_proxy():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/{proxy+}'
+    request['path'] = '/'+request['requestContext']['stage'] + request['requestContext']['resourcePath']
+    environ = WsgiEnviron(request).environ
+    assert environ['SCRIPT_NAME'] == '/testing'
+
+
+def test_wsgi_script_name_nested():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/nested'
+    request['path'] = '/'+request['requestContext']['stage'] + request['requestContext']['resourcePath']
+    environ = WsgiEnviron(request).environ
+    assert environ['SCRIPT_NAME'] == '/testing/nested'
+
+
+def test_wsgi_script_name_nested_proxy():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/nested/{proxy+}'
+    request['path'] = '/'+request['requestContext']['stage'] + request['requestContext']['resourcePath']
+    environ = WsgiEnviron(request).environ
+    assert environ['SCRIPT_NAME'] == '/testing/nested'
+
+
+def test_wsgi_path_info_root():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/'
+    request['path'] = '/'
+    environ = WsgiEnviron(request).environ
+    assert environ['PATH_INFO'] == '/'
+
+
+def test_wsgi_path_info_root_proxy():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/{proxy+}'
+    request['path'] = '/'
+    environ = WsgiEnviron(request).environ
+    assert environ['PATH_INFO'] == '/'
+
+
+def test_wsgi_path_info_root_proxy_pathargs():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/{proxy+}'
+    request['path'] = '/ohai'
+    environ = WsgiEnviron(request).environ
+    assert environ['PATH_INFO'] == '/ohai'
+
+
+def test_wsgi_path_info_nested():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/nested'
+    request['path'] = '/nested'
+    environ = WsgiEnviron(request).environ
+    assert environ['PATH_INFO'] == ''
+
+def test_wsgi_path_info_nested_proxy():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/nested/{proxy+}'
+    request['path'] = '/nested'
+    environ = WsgiEnviron(request).environ
+    assert environ['PATH_INFO'] == ''
+
+
+def test_wsgi_path_info_nested_proxy_pathargs():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/nested/{proxy+}'
+    request['path'] = '/nested/ohai'
+    environ = WsgiEnviron(request).environ
+    assert environ['PATH_INFO'] == '/ohai'
+
+
 def test_wsgi_environ_body():
     body = StringIO('here i am...')
     request = get_apigr()

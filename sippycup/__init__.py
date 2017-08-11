@@ -68,13 +68,31 @@ class WsgiEnviron(object):
         else:
             return urlencode(self.request['queryStringParameters'])
 
+    @property
+    def script_name(self):
+        return '/{0}{1}'.format(
+            self.request['requestContext']['stage'],
+            self.resource_path_base
+        )
+
+    @property
+    def resource_path_base(self):
+        end = self.request['requestContext']['resourcePath'].rfind('/{proxy+}')
+        if end == -1:
+            end = None
+        return self.request['requestContext']['resourcePath'][0:end].rstrip('/')
+
+    @property
+    def path_info(self):
+        return self.request['path'].replace(self.resource_path_base, '', 1)
+
     def __init__(self, request):
         self.request = request
 
         self.environ = {
             'REQUEST_METHOD': request['httpMethod'],
-            'SCRIPT_NAME': '/{0}'.format(request['requestContext']['stage']),
-            'PATH_INFO': request['path'],
+            'SCRIPT_NAME': self.script_name,
+            'PATH_INFO': self.path_info,
             'QUERY_STRING':  self.query_string,
             'CONTENT_TYPE': self.content_type,
             'CONTENT_LENGTH': self.content_length,
