@@ -20,7 +20,7 @@ class SippyCupResponse:
             'statusCode': int(self.status.split()[0]),
             'body': ''.join(
                 [self.body.getvalue()] +
-                [x.decode(sys.stdout.encoding) for x in body]
+                [x.decode(sys.stdout.encoding or 'UTF8') for x in body]
             ),
             'headers': dict(self.headers)
         }
