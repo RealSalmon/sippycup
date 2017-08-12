@@ -15,8 +15,10 @@ def hello_world(name='World'):
 def index():
     # return the additional WSGI environment variables that SippyCup
     # provides
+    rc = request.environ['apigateway.requestContext']
+    rc['accountId'] = 'xxxxxxxxxx'
     return jsonify({
-        'requestContext': request.environ['apigateway.requestContext'],
+        'requestContext': rc,
         'stageVariables': request.environ['apigateway.stageVariables']
     })
 
