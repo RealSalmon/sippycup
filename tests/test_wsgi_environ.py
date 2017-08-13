@@ -36,36 +36,78 @@ def test_wsgi_environ_basic():
         assert environ[key] == value
 
 
+def test_script_name_is_script_name():
+    request = get_apigr()
+    wsgi = WsgiEnviron(request)
+    assert wsgi.script_name == wsgi.environ['SCRIPT_NAME']
+
+
 def test_wsgi_script_name_root():
     request = get_apigr()
     request['requestContext']['resourcePath'] = '/'
-    request['path'] = '/'+request['requestContext']['stage'] + request['requestContext']['resourcePath']
-    environ = WsgiEnviron(request).environ
-    assert environ['SCRIPT_NAME'] == '/testing'
+    request['path'] = '/testing/'
+    wsgi = WsgiEnviron(request)
+    assert wsgi.script_name == '/testing'
+
+
+def test_wsgi_script_name_root_mapped():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/'
+    request['path'] = '/'
+    request['stageVariables']['SIPPYCUP_SCRIPT_NAME_BASE'] = '/'
+    wsgi = WsgiEnviron(request)
+    assert wsgi.script_name == ''
 
 
 def test_wsgi_script_name_root_proxy():
     request = get_apigr()
     request['requestContext']['resourcePath'] = '/{proxy+}'
-    request['path'] = '/'+request['requestContext']['stage'] + request['requestContext']['resourcePath']
-    environ = WsgiEnviron(request).environ
-    assert environ['SCRIPT_NAME'] == '/testing'
+    request['path'] = '/testing/some/params'
+    wsgi = WsgiEnviron(request)
+    assert wsgi.script_name == '/testing'
+
+
+def test_wsgi_script_name_root_proxy_mapped():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/{proxy+}'
+    request['path'] = '/some/params'
+    request['stageVariables']['SIPPYCUP_SCRIPT_NAME_BASE'] = '/'
+    wsgi = WsgiEnviron(request)
+    assert wsgi.script_name == ''
 
 
 def test_wsgi_script_name_nested():
     request = get_apigr()
     request['requestContext']['resourcePath'] = '/nested'
-    request['path'] = '/'+request['requestContext']['stage'] + request['requestContext']['resourcePath']
-    environ = WsgiEnviron(request).environ
-    assert environ['SCRIPT_NAME'] == '/testing/nested'
+    request['path'] = '/testing/nested/'
+    wsgi = WsgiEnviron(request)
+    assert wsgi.script_name == '/testing/nested'
+
+
+def test_wsgi_script_name_nested_mapped():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/nested'
+    request['path'] = '/nested/'
+    request['stageVariables']['SIPPYCUP_SCRIPT_NAME_BASE'] = '/'
+    wsgi = WsgiEnviron(request)
+    assert wsgi.script_name == '/nested'
 
 
 def test_wsgi_script_name_nested_proxy():
     request = get_apigr()
     request['requestContext']['resourcePath'] = '/nested/{proxy+}'
-    request['path'] = '/'+request['requestContext']['stage'] + request['requestContext']['resourcePath']
-    environ = WsgiEnviron(request).environ
-    assert environ['SCRIPT_NAME'] == '/testing/nested'
+    request['path'] = '/testing/nested/some/params'
+    wsgi = WsgiEnviron(request)
+    assert wsgi.script_name == '/testing/nested'
+
+
+def test_wsgi_script_name_nested_proxy_mapped():
+    request = get_apigr()
+    request['requestContext']['resourcePath'] = '/nested/{proxy+}'
+    request['path'] = '/nested/some/params'
+    request['stageVariables']['SIPPYCUP_SCRIPT_NAME_BASE'] = '/'
+    wsgi = WsgiEnviron(request)
+    assert wsgi.script_name == '/nested'
 
 
 def test_wsgi_path_info_root():

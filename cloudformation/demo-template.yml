@@ -240,6 +240,11 @@ Resources:
       Description: "Demo Application for Sippy Cup"
       RestApiId: !Ref ApiGatewayApi
       DeploymentId: !Ref ApiGatewayDeployment
+      Variables:
+        SIPPYCUP_SCRIPT_NAME_BASE: !If
+          - UseCustomDomain
+          - "/"
+          - "/demo"
 
   ApiGatewayLambdaPermissionsPython27:
     Type: "AWS::Lambda::Permission"

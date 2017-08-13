@@ -70,10 +70,12 @@ class WsgiEnviron(object):
 
     @property
     def script_name(self):
-        return '/{0}{1}'.format(
-            self.request['requestContext']['stage'],
-            self.resource_path_base
-        )
+        if 'SIPPYCUP_SCRIPT_NAME_BASE' in self.request['stageVariables']:
+            base = self.request['stageVariables']['SIPPYCUP_SCRIPT_NAME_BASE'].rstrip('/')
+        else:
+            base = ''.join(['/', self.request['requestContext']['stage']])
+
+        return '/'.join([base, self.resource_path_base.lstrip('/')]).rstrip('/')
 
     @property
     def resource_path_base(self):

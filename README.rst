@@ -87,6 +87,23 @@ Finally, `set up an API Gateway proxy resource with the lambda proxy
 integration`_. It is recommended to create resources on both ‘/’ and
 ‘/SOMEPREFIX’ unless you don’t need the ‘/’ route.
 
+A note about URL generation and redirection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In order to properly execute things like URL generation and redirection,
+WSGI applications use an environment variable called SCRIPT_NAME. By default,
+this works as one might expect. However, if your API is
+`mapped to a custom domain using base path mapping`_, you need to tell
+the application about this. This is a common problem with more traditional
+setups as well (e.g. applications behind a reverse proxy).
+
+The solution in SippyCup is to `set a stage variable`_ called
+SIPPYCUP_SCRIPT_NAME_BASE, which will be used by Sippy Cup to properly construct
+SCRIPT_NAME so that things work as expected.
+
+e.g. If you are mapping your 'production' stage to api.mydomain.com using the default
+configuration in ApiGateway, you should set the 'SIPPYCUP_SCRIPT_NAME_BASE' stage
+variable for that stage to '/'.
+
 .. _Python: https://www.python.org/
 .. _AWS API Gateway: https://aws.amazon.com/api-gateway/
 .. _AWS Lambda: https://aws.amazon.com/lambda/
@@ -94,3 +111,5 @@ integration`_. It is recommended to create resources on both ‘/’ and
 .. _create a deployment package: https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html
 .. _virtualenv: https://virtualenv.pypa.io/en/stable/
 .. _set up an API Gateway proxy resource with the lambda proxy integration: https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-set-up-simple-proxy.html#api-gateway-set-up-lambda-proxy-integration-on-proxy-resource
+.. _mapped to a custom domain using base path mapping: http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
+.. _set a stage variable: http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-set-stage-variables-aws-console.html
