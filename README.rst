@@ -96,7 +96,7 @@ this works as one might expect. However, if your API is
 the application about this. This is a common problem with more traditional
 setups as well (e.g. applications behind a reverse proxy).
 
-The solution in SippyCup is to `set a stage variable`_ called
+The solution in Sippy Cup is to `set a stage variable`_ called
 SIPPYCUP_SCRIPT_NAME_BASE, which will be used by Sippy Cup to properly construct
 SCRIPT_NAME so that things work as expected.
 
