@@ -1,8 +1,8 @@
 Sippy Cup
 =========
 
-.. image:: https://circleci.com/bb/realsalmon/sippycup.svg?style=svg
-    :target: https://circleci.com/bb/realsalmon/sippycup
+.. image:: https://circleci.com/gh/RealSalmon/sippycup.svg?style=svg
+    :target: https://circleci.com/gh/RealSalmon/sippycup
 
 Python Adaptor for Serving WSGI Applications with AWS Lambda and API Gateway
 ----------------------------------------------------------------------------
