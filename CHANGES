@@ -1,0 +1,16 @@
+Sippy Cup Changelog
+===================
+
+Version 0.5
+-----------
+- added support for Python 3.6 (Thanks to PJ Santoro! -
+  https://github.com/abigperson/)
+- use API Gateway's resource path when configuring WSGI environment's
+  SCRIPT_NAME and PATH_INFO in order to support nested resources
+- hide accountId in demo app
+- added CloudFormation template to provision AWS resources required for
+  setting up demo app
+- support for specifying SCRIPT_NAME so that redirection and URL generation
+  work as expected when base path mapping is being used in API Gateway. This
+  is done by setting a stage variable named SIPPYCUP_SCRIPT_NAME_BASE. See
+  README for additional details.
