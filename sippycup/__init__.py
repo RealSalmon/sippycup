@@ -1,4 +1,5 @@
-import sys
+import itertools
+from sys import stderr, stdout
 try:
     from urllib import urlencode
     from StringIO import StringIO
@@ -16,13 +17,39 @@ def sippycup(app, event, context=None):
 class SippyCupResponse:
 
     def apigr(self, body=''):
+
+        # The response format states that headers must be a dictionary, which
+        # presents a problem when multiple Set-Cookie headers are returned by
+        # the application (only the last cookie set gets put into the response)
+        #
+        # Browser's seem not to care about the case of the header name, and
+        # API Gateway does not alter the header names.
+        #
+        # As such, setting multiple cookies in the response seems to be
+        # possible by simply using a different case permutations of 'Set-Cookie'
+        #
+        # Generation of case permutations comes from ephemient on StackOverflow
+        # https://stackoverflow.com/questions/11144389/find-all-upper-lower-and-mixed-case-combinations-of-a-string
+
+        headers = {h[0]: h[1] for h in self.headers
+                   if h[0].lower() != 'set-cookie'}
+
+        headers.update(zip(
+            map(
+                ''.join,
+                itertools.product(
+                    *zip('set-cookie'.upper(), 'set-cookie'.lower()))
+            ),
+            [h[1] for h in self.headers if h[0].lower() == 'set-cookie']
+        ))
+
         return {
             'statusCode': int(self.status.split()[0]),
             'body': ''.join(
                 [self.body.getvalue()] +
-                [x.decode(sys.stdout.encoding or 'UTF8') for x in body]
+                [x.decode(stdout.encoding or 'UTF8') for x in body]
             ),
-            'headers': dict(self.headers)
+            'headers': headers
         }
 
     def __init__(self):
@@ -104,7 +131,7 @@ class WsgiEnviron(object):
             'wsgi.version': (1, 0),
             'wsgi.url_scheme': 'https',
             'wsgi.input': self.body,
-            'wsgi.errors': '',  # what should this be?
+            'wsgi.errors': stderr,
             'wsgi.multiprocess': False,
             'wsgi.multithread': False,
             'wsgi.run_once': False,

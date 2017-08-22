@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, make_response, redirect
 from sippycup import sippycup
 from tests.utils import get_apigr
 
@@ -8,6 +8,15 @@ app = Flask(__name__)
 @app.route('/test/plain')
 def plain():
     return Response('ohai!', content_type='text/plain')
+
+
+@app.route('/test/cookies')
+def cookies():
+    r = make_response(redirect('/test/plain'))
+    r.set_cookie('a', '1')
+    r.set_cookie('b', '2')
+    r.set_cookie('c', '3')
+    return r
 
 
 def test_response_body():
@@ -34,3 +43,10 @@ def test_response_status():
     result = sippycup(app, event)
     assert 'statusCode' in result
     assert result['statusCode'] == 200
+
+
+def test_response_cookies():
+    event = get_apigr()
+    event['path'] = '/test/cookies'
+    result = sippycup(app, event)
+    assert len([x for x in result['headers'] if x.lower() == 'set-cookie']) == 3

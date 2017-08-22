@@ -1,3 +1,4 @@
+from sys import stderr
 from sippycup import WsgiEnviron
 from tests.utils import get_apigr
 try:
@@ -21,7 +22,7 @@ def test_wsgi_environ_basic():
         'SERVER_PROTOCOL': 'HTTP/1.1',
         'wsgi.version': (1, 0),
         'wsgi.url_scheme': 'https',
-        'wsgi.errors': '',
+        'wsgi.errors': stderr,
         'wsgi.multiprocess': False,
         'wsgi.multithread': False,
         'wsgi.run_once': False,

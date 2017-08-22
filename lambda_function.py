@@ -1,6 +1,6 @@
 # Demo App for Sippy Cup
 
-from flask import Flask, Response, request, jsonify
+from flask import Flask, Response, request, jsonify, make_response
 from sippycup import sippycup
 
 app = Flask(__name__)
@@ -17,10 +17,14 @@ def index():
     # provides
     rc = request.environ['apigateway.requestContext']
     rc['accountId'] = 'xxxxxxxxxx'
-    return jsonify({
+    r = make_response(jsonify({
         'requestContext': rc,
         'stageVariables': request.environ['apigateway.stageVariables']
-    })
+    }))
+    r.set_cookie('cisfor', 'cookie')
+    r.set_cookie('cookiestartswith', 'c')
+    r.set_cookie('multiplecookies', 'is possible')
+    return r
 
 
 def lambda_handler(event, context):
