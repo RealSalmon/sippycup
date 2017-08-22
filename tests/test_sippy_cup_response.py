@@ -43,3 +43,16 @@ def test_response_apigr_body():
     apigr = response.apigr()
     assert 'body' in apigr
     assert apigr['body'] == 'ohai!'
+
+
+def test_response_cookies():
+    response = SippyCupResponse()
+    result = response('200 OK', [
+        ('Content-Type', 'text/plain'),
+        ('Set-Cookie', 'something'),
+        ('Set-Cookie', 'something'),
+        ('Set-Cookie', 'something')
+    ])
+    result('ohai!')
+    apigr = response.apigr()
+    assert len([x for x in apigr['headers'] if x.lower() == 'set-cookie']) == 3
