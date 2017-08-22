@@ -1,6 +1,10 @@
 Sippy Cup Changelog
 ===================
 
+Version 0.5.1
+-------------
+- added support / workaround for setting multiple cookies
+
 Version 0.5
 -----------
 - added support for Python 3.6 (Thanks to PJ Santoro! -
