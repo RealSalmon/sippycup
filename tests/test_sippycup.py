@@ -1,4 +1,4 @@
-from flask import Flask, Response, make_response, redirect
+from flask import Flask, Response, make_response, redirect, request
 from sippycup import sippycup
 from tests.utils import get_apigr
 
@@ -17,6 +17,11 @@ def cookies():
     r.set_cookie('b', '2')
     r.set_cookie('c', '3')
     return r
+
+
+@app.route('/test/query')
+def query():
+    return Response(request.args.get('a'), mimetype='text/plain')
 
 
 def test_response_body():
@@ -50,3 +55,19 @@ def test_response_cookies():
     event['path'] = '/test/cookies'
     result = sippycup(app, event)
     assert len([x for x in result['headers'] if x.lower() == 'set-cookie']) == 3
+
+
+def test_response_empty_query():
+    event = get_apigr()
+    event['path'] = '/test/query'
+    event['queryStringParameters'] = None
+    result = sippycup(app, event)
+    assert result['body'] == ''
+
+
+def test_response_query():
+    event = get_apigr()
+    event['path'] = '/test/query'
+    event['queryStringParameters'] = {'a': 'ohai'}
+    result = sippycup(app, event)
+    assert result['body'] == 'ohai'

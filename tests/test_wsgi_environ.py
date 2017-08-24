@@ -14,7 +14,7 @@ def test_wsgi_environ_basic():
         'REQUEST_METHOD': 'GET',
         'SCRIPT_NAME': '/testing',
         'PATH_INFO': '/',
-        'QUERY_STRING':  None,
+        'QUERY_STRING':  '',
         'CONTENT_TYPE': 'text/plain',
         'CONTENT_LENGTH': '0',
         'SERVER_NAME':  'testing.fogbutter.com',

@@ -91,7 +91,7 @@ class WsgiEnviron(object):
     @property
     def query_string(self):
         if self.request['queryStringParameters'] is None:
-            return None
+            return ''
         else:
             return urlencode(self.request['queryStringParameters'])
 
