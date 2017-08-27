@@ -116,6 +116,10 @@ class WsgiEnviron(object):
         return self.request['path'].replace(self.resource_path_base, '', 1)
 
     def __init__(self, request):
+
+        if request['stageVariables'] is None:
+            request['stageVariables'] = {}
+
         self.request = request
 
         self.environ = {

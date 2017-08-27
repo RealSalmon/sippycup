@@ -1,6 +1,11 @@
 Sippy Cup Changelog
 ===================
 
+Version 0.5.3
+-------------
+- fix a bug where a TypeError is always raised when no stage variables are
+  defined
+
 Version 0.5.2
 -------------
 - fixed a bug where QUERY_STRING was initialized as None instead of an empty
