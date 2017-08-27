@@ -71,3 +71,4 @@ def test_response_query():
     event['queryStringParameters'] = {'a': 'ohai'}
     result = sippycup(app, event)
     assert result['body'] == 'ohai'
+

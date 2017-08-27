@@ -218,3 +218,10 @@ def test_wsgi_environ_stage_vars():
             "ben": "was-here",
             "so_was": "red"
     }
+
+
+def test_empty_stage_vars():
+    request = get_apigr()
+    request['stageVariables'] = None
+    environ = WsgiEnviron(request).environ
+    assert type(environ['apigateway.stageVariables']) == dict
