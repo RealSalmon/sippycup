@@ -83,9 +83,11 @@ class WsgiEnviron(object):
 
     @property
     def content_type(self):
+        header = [val for key, val in self.request['headers'].items()
+                  if key.lower() == 'content-type']
         try:
-            return self.request['headers']['Content-Type']
-        except KeyError:
+            return header[0]
+        except IndexError:
             return None
 
     @property
