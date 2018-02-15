@@ -225,3 +225,10 @@ def test_empty_stage_vars():
     request['stageVariables'] = None
     environ = WsgiEnviron(request).environ
     assert type(environ['apigateway.stageVariables']) == dict
+
+
+def test_content_type_header_case_insensitive():
+    request = get_apigr()
+    request['headers']['cOntEnt-tyPe'] = 'giddy/up'
+    environ = WsgiEnviron(request).environ
+    assert environ['CONTENT_TYPE'] == 'giddy/up'

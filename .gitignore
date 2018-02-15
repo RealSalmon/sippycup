@@ -9,3 +9,5 @@ lambda_function.zip
 dist
 *.egg-info
 .coverage
+.pytest_cache
+.DS_Store
