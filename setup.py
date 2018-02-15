@@ -6,10 +6,10 @@ with open('README.rst') as readme_file:
 config = {
     'description': 'An adaptor for serving WSGI applications using AWS Lambda and API Gateway',
     'long_description': README,
-    'url': 'https://bitbucket.org/realsalmon/sippycup',
+    'url': 'https://github.com/realsalmon/sippycup',
     'author': 'Ben Jones',
     'author_email': 'ben@fogbutter.com',
-    'version': '0.5.3',
+    'version': '0.5.4',
     'packages': ['sippycup'],
     'name': 'sippycup',
     'install_requires': [],

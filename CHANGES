@@ -1,6 +1,11 @@
 Sippy Cup Changelog
 ===================
 
+Version 0.5.4
+-------------
+- use case insensitive search for Content-Type header in request event
+- added a test to ensure POST requests work as expected
+
 Version 0.5.3
 -------------
 - fix a bug where a TypeError is always raised when no stage variables are
