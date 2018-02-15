@@ -1,3 +1,4 @@
+import json
 from flask import Flask, Response, make_response, redirect, request
 from sippycup import sippycup
 from tests.utils import get_apigr
@@ -22,6 +23,11 @@ def cookies():
 @app.route('/test/query')
 def query():
     return Response(request.args.get('a'), mimetype='text/plain')
+
+
+@app.route('/test/post', methods=['POST'])
+def post():
+    return json.dumps(request.form)
 
 
 def test_response_body():
@@ -72,3 +78,14 @@ def test_response_query():
     result = sippycup(app, event)
     assert result['body'] == 'ohai'
 
+
+def test_response_post():
+    event = get_apigr()
+    event['path'] = '/test/post'
+    event['body'] = 'a=ohai'
+    event['requestContext']['httpMethod'] = 'POST'
+    event['httpMethod'] = 'POST'
+    event['headers']['Content-Length'] = 6
+    event['headers']['Content-Type'] = 'application/x-www-form-urlencoded'
+    result = sippycup(app, event)
+    assert result['body'] == '{"a": "ohai"}'
