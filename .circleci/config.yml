@@ -1,7 +1,3 @@
-# Python CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-python/ for more details
-#
 version: 2
 jobs:
   build-python27:
@@ -16,7 +12,7 @@ jobs:
             pip install . pytest pytest-cov flask
       - run:
           name: run tests
-          command: make tests-actual
+          command: make _tests
 
   build-python36:
     docker:
@@ -30,7 +26,7 @@ jobs:
             pip install . pytest pytest-cov flask
       - run:
           name: run tests
-          command: make tests-actual
+          command: make _tests
 
 workflows:
   version: 2

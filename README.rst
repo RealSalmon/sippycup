@@ -24,10 +24,6 @@ for how to access these.
 - **apigateway.stageVariables:** API Gateway stage variables
 - **apigateway.requestContext:** The event request context
 
-Background
-~~~~~~~~~~
-`<https://ben.fogbutter.com/2016/11/09/introducing-sippy-cup.html>`_
-
 Getting started
 ~~~~~~~~~~~~~~~
 
