@@ -115,7 +115,7 @@ class WsgiEnviron(object):
 
     @property
     def path_info(self):
-        return self.request['path'].replace(self.resource_path_base, '', 1)
+        return self.request['path'].replace(self.script_name, '', 1)
 
     def __init__(self, request):
 
