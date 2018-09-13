@@ -1,0 +1,9 @@
+version: "3.4"
+services:
+  python:
+    build:
+      target: "base"
+      context: "."
+      dockerfile: "./docker/Dockerfile"
+    volumes:
+      - ".:/home/python/project"

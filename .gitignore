@@ -11,3 +11,5 @@ dist
 .coverage
 .pytest_cache
 .DS_Store
+.package
+demo-package.zip
