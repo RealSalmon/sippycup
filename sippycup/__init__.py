@@ -115,7 +115,10 @@ class WsgiEnviron(object):
 
     @property
     def path_info(self):
-        return self.request['path'].replace(self.script_name, '', 1)
+        if 'SIPPYCUP_SCRIPT_NAME_BASE'in self.request['stageVariables']:
+            return self.request['path'].replace(self.script_name, '', 1)
+        else:
+            return self.request['path'].replace(self.resource_path_base, '', 1)
 
     def __init__(self, request):
 
