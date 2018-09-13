@@ -1,6 +1,14 @@
 Sippy Cup Changelog
 ===================
 
+Version 0.6.0
+-------------
+- use SIPPYCUP_SCRIPT_NAME_BASE when generating PATH_INFO
+- switch to a docker-compose based development environment
+- clean up Makefile
+- clean up CI config
+- implement SAM in demo CloudFormation template for demo app
+
 Version 0.5.4
 -------------
 - use case insensitive search for Content-Type header in request event
