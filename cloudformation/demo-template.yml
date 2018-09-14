@@ -1,13 +1,9 @@
-# After creating a stack with this template, you must update the 2 Lambda
-# functions that it creates with the appropriate code by uploading the
-# demo application's deployment package (which can be created via
-# 'make lambda-package'). The functions that this template creates are only
-# intended to be placeholders.
+# Note that the use of the following references is not actually
+# supported and could break without notice when a stack is updated
 #
-# Updating a stack in a way that changes the API Gateway API or its associated
-# resources requires that you redeploy the API via some other method.
-# Unfortunately, CloudFormation will not automatically create an updated
-# deployment.
+# !Ref ServerlessRestApi
+# !Ref ServerlessRestApiProdStage
+
 
 AWSTemplateFormatVersion: 2010-09-09
 Transform: 'AWS::Serverless-2016-10-31'
@@ -108,8 +104,6 @@ Resources:
     Condition: UseCustomDomain
     Properties:
       DomainName: !Ref Domain
-      # Not the following 2 !Ref resources are unofficial and could
-      # break without notice when a stack is updated
       RestApiId: !Ref ServerlessRestApi
       Stage: !Ref ServerlessRestApiProdStage
 
