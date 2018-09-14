@@ -10,7 +10,7 @@ shell:
 	docker-compose run --rm python bash
 
 root:
-	docker-compsose run --rm -u root python bash
+	docker-compose run --rm -u root python bash
 
 .PHONY: tests
 tests:
