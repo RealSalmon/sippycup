@@ -42,7 +42,7 @@ _demo-package:
 _pip-package:
 	python setup.py sdist
 
-_pip-release: pip-package
+_pip-release: _pip-package
 	twine upload dist/*
 
 _tests:
